@@ -1,1 +1,99 @@
-<p>login works!</p>
+<div
+  class="flex items-center justify-center h-screen bg-gray-100 overflow-hidden"
+>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full sm:w-96">
+    <div class="flex flex-col items-center text-center mb-6">
+      <h3 class="font-bold text-2xl mt-2">Iniciar Sesión</h3>
+      <p class="text-gray-500">Administra tus ventas facilmente</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="verificationLogin()">
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-semibold text-gray-700"
+          >Correo Electrónico</label
+        >
+        <div class="relative mt-2">
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            placeholder="Introduce tu email"
+            class="block w-full px-4 py-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            [ngClass]="{
+              'border-red-500':
+                loginForm.get('email')?.invalid &&
+                (loginForm.get('email')?.touched ||
+                  loginForm.get('email')?.dirty)
+            }"
+          />
+          <div
+            *ngIf="
+              loginForm.get('email')?.invalid &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+            class="text-sm text-red-500 mt-2"
+          >
+            <div *ngIf="loginForm.get('email')?.errors?.['required']">
+              El correo electrónico es requerido.
+            </div>
+            <div *ngIf="loginForm.get('email')?.errors?.['email']">
+              El formato del correo no es válido.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label for="password" class="block text-sm font-semibold text-gray-700"
+          >Contraseña</label
+        >
+        <div class="relative mt-2">
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            placeholder="Introduce tu contraseña"
+            class="block w-full px-4 py-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500"
+            [ngClass]="{
+              'border-red-500':
+                loginForm.get('password')?.invalid &&
+                (loginForm.get('password')?.touched ||
+                  loginForm.get('password')?.dirty)
+            }"
+          />
+          <div
+            *ngIf="
+              loginForm.get('password')?.invalid &&
+              (loginForm.get('password')?.touched ||
+                loginForm.get('password')?.dirty)
+            "
+            class="text-sm text-red-500 mt-2"
+          >
+            <div *ngIf="loginForm.get('password')?.errors?.['required']">
+              La contraseña es requerida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <button
+          type="submit"
+          class="w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none"
+          *ngIf="!loading"
+          [disabled]="loginForm.invalid || activeButton"
+        >
+          Iniciar Sesión
+        </button>
+        <button
+          type="submit"
+          class="w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none"
+          *ngIf="loading"
+          [disabled]="loginForm.invalid || activeButton"
+        >
+          <i class="fa-solid fa-spinner fa-spin fa-2xl"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
