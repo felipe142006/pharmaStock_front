@@ -7,7 +7,7 @@
       <p class="text-gray-500">Administra tus ventas facilmente</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="verificationLogin()">
+    <form [formGroup]="loginForm">
       <div class="mb-4">
         <label for="email" class="block text-sm font-semibold text-gray-700"
           >Correo Electrónico</label
@@ -26,13 +26,8 @@
                   loginForm.get('email')?.dirty)
             }"
           />
-          <div
-            *ngIf="
-              loginForm.get('email')?.invalid &&
-              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
-            "
-            class="text-sm text-red-500 mt-2"
-          >
+          @if(loginForm.get('email')?.invalid &&  (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)) {
+          <div class="text-sm text-red-500 mt-2">
             <div *ngIf="loginForm.get('email')?.errors?.['required']">
               El correo electrónico es requerido.
             </div>
@@ -40,6 +35,7 @@
               El formato del correo no es válido.
             </div>
           </div>
+          }
         </div>
       </div>
 
@@ -82,6 +78,7 @@
           class="w-full py-3 px-4 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none"
           *ngIf="!loading"
           [disabled]="loginForm.invalid || activeButton"
+          (click)="verificationLogin()"
         >
           Iniciar Sesión
         </button>
