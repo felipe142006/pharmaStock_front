@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-clients',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     NavbarComponent
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss'
+  templateUrl: './clients.component.html',
+  styleUrl: './clients.component.scss'
 })
-export class DashboardComponent {
+export class ClientsComponent {
 
 }
