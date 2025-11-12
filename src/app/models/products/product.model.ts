@@ -6,7 +6,7 @@ export interface Product {
   stock: number;
   min_stock: number;
   cost?: number | null;
-  price: number;
+  price: number | null;
   expires_at?: string | null;
   is_active: boolean;
   created_at?: string;

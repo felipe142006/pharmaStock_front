@@ -1,2 +1,241 @@
 <app-navbar></app-navbar>
-<p>products works!</p>
+
+<div class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Productos</h1>
+      <p class="text-sm text-gray-500">Administra tu inventario y precios</p>
+    </div>
+
+    <button
+      class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-white font-semibold shadow hover:bg-emerald-700"
+      (click)="openCreate()"
+    >
+      <i class="fas fa-plus"></i>
+      Nuevo producto
+    </button>
+  </div>
+
+  @if (loading()) {
+  <div class="w-full flex items-center justify-center py-16 text-gray-600">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <span class="ml-3">Cargando productos…</span>
+  </div>
+  } @else {
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
+        <tr>
+          <th class="px-4 py-3 text-left">Código</th>
+          <th class="px-4 py-3 text-left">Nombre</th>
+          <th class="px-4 py-3 text-left">Precio</th>
+          <th class="px-4 py-3 text-left">Stock</th>
+          <th class="px-4 py-3 text-left">Estado</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of products(); track trackById($index, p)) {
+        <tr class="border-b hover:bg-gray-50 transition">
+          <td class="px-4 py-2 font-mono">{{ p.sku }}</td>
+          <td class="px-4 py-2">{{ p.name }}</td>
+          <td class="px-4 py-2">$ {{ p.price ?? 0 | number : "1.0-0" }}</td>
+          <td class="px-4 py-2">
+            <span
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+              [ngClass]="badgeStock(p)"
+            >
+              <i class="fas fa-box"></i>
+              {{ p.stock || 0 }}
+              <span class="text-gray-500" *ngIf="p.min_stock != null"
+                >/ min {{ p.min_stock }}</span
+              >
+            </span>
+          </td>
+          <td class="px-4 py-2">
+            <span
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+              [ngClass]="badgeActive(p)"
+            >
+              <i
+                class="fas"
+                [class.fa-check-circle]="p.is_active"
+                [class.fa-minus-circle]="!p.is_active"
+              ></i>
+              {{ p.is_active ? "Activo" : "Inactivo" }}
+            </span>
+          </td>
+          <td class="px-4 py-2 text-center">
+            <button
+              class="text-blue-600 hover:text-blue-800 mx-1"
+              (click)="openEdit(p)"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              class="text-red-600 hover:text-red-800 mx-1"
+              (click)="deleteProduct(p.id)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+            No hay productos. Crea el primero con el botón “Nuevo producto”.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+
+<!-- modal de crear y editar -->
+<ng-template #productModal>
+  <div class="modal-header">
+    <h4 class="modal-title text-gray-900 font-semibold">
+      {{ editingProduct() ? "Editar producto" : "Nuevo producto" }}
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="closeModal()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium text-gray-600">SKU<small class="text-red-600"> *</small></label>
+        <input
+          type="text"
+          formControlName="sku"
+          placeholder="PROD-001"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (form.get('sku')?.invalid && (form.get('sku')?.touched ||
+        form.get('sku')?.dirty)) {
+        <div class="text-xs text-rose-600 mt-1">El SKU es requerido.</div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Nombre<small class="text-red-600"> *</small></label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Nombre del producto"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (form.get('name')?.invalid && (form.get('name')?.touched ||
+        form.get('name')?.dirty)) {
+        <div class="text-xs text-rose-600 mt-1">El nombre es requerido.</div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Precio<small class="text-red-600"> *</small></label>
+        <input
+          type="number"
+          min="0"
+          formControlName="price"
+          placeholder="6500"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (form.get('price')?.invalid && (form.get('price')?.touched ||
+        form.get('price')?.dirty)) {
+        <div class="text-xs text-rose-600 mt-1">
+          El precio es requerido y debe ser ≥ 0.
+        </div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Costo de compra<small class="text-red-600"> *</small></label>
+        <input
+          type="number"
+          min="0"
+          formControlName="cost"
+          placeholder="3500"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Stock<small class="text-red-600"> *</small></label>
+        <input
+          type="number"
+          min="0"
+          formControlName="stock"
+          placeholder="0"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600"
+          >Stock mínimo<small class="text-red-600"> *</small></label
+        >
+        <input
+          type="number"
+          min="0"
+          formControlName="min_stock"
+          placeholder="10"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Fecha de vencimiento</label>
+        <input
+          type="date"
+          formControlName="expires_at"
+          [attr.min]="todayStr"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 mt-2">
+        <input
+          type="checkbox"
+          id="is_active"
+          formControlName="is_active"
+          class="h-4 w-4"
+        />
+        <label for="is_active" class="text-sm text-gray-700">Activo</label>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium text-gray-600">Descripción</label>
+        <textarea
+          rows="3"
+          formControlName="description"
+          placeholder="Descripción del producto…"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        ></textarea>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary inline-flex items-center gap-2"
+      (click)="saveProduct()"
+      [disabled]="form.invalid || formLoading()"
+    >
+      @if (!formLoading()) {
+      <i class="fas fa-save"></i>
+      Guardar } @else {
+      <i class="fas fa-spinner fa-spin"></i>
+      Procesando… }
+    </button>
+  </div>
+</ng-template>
