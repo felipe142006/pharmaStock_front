@@ -30,6 +30,14 @@
 
       <a
         class="flex items-center gap-2 px-3 py-2 hover:text-yellow-400 transition cursor-pointer"
+        (click)="nav.goToSale()"
+      >
+        <i class="fa-solid fa-shop"></i>
+        <span>Ventas</span>
+      </a>
+
+      <a
+        class="flex items-center gap-2 px-3 py-2 hover:text-yellow-400 transition cursor-pointer"
         (click)="nav.goToProduct()"
       >
         <i class="fa-solid fa-boxes-stacked"></i>
@@ -38,7 +46,7 @@
 
       <a
         class="flex items-center gap-2 px-3 py-2 hover:text-yellow-400 transition cursor-pointer"
-        (click)="nav.goToBuyer()"
+        (click)="nav.goToClients()"
       >
         <i class="fa-solid fa-users"></i>
         <span>Clientes</span>

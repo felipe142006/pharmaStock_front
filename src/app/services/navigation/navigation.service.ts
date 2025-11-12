@@ -24,14 +24,21 @@ export class NavigationService {
   /**
    * redirige a los clientes de la pagina
    */
-  goToBuyer() {
+  goToClients() {
     this.router.navigate(['/clients']);
+  }
+
+  /**
+   * redirige a los clientes de la pagina
+   */
+  goToSale() {
+    this.router.navigate(['/sales']);
   }
 
   /**
    * redirige a los usuarios de la pagina
    */
   goToUser() {
-    this.router.navigate(['/user']);
+    this.router.navigate(['/users']);
   }
 }

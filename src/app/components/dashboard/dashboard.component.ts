@@ -141,9 +141,6 @@ export class DashboardComponent {
   }
 
   // rutas
-  goToCreateSale() {
-    this.router.navigate(['/sales/create']);
-  }
   goToProducts() {
     this.router.navigate(['/product']);
   }

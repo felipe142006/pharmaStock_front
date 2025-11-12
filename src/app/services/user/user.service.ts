@@ -1,33 +1,33 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { environment } from "../../../environments/environment";
-import { HeaderService } from "../../shared/header/header.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { User } from '../../models/user/user.model';
+import { ApiResponse } from '../../models/api/api.model';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UserService {
     private apiUrl = environment.apiUrl;
 
-    constructor(
-        private http: HttpClient,
-        private header: HeaderService,
-    ) { }
+    constructor(private http: HttpClient) {}
 
-    listUser(): Observable<any> {
-        return this.http.get<any>(`${this.apiUrl}/user/listUser`, this.header.getHttpOptions());
+    // lista todos los usuario registrados
+    listUser(): Observable<ApiResponse<User[]>> {
+        return this.http.get<ApiResponse<User[]>>(`${this.apiUrl}/user/listUser`);
     }
 
-    createUser(data: any): Observable<any> {
-        return this.http.post<any>(`${this.apiUrl}/user/createUser`, data, this.header.getHttpOptions());
+    // crea un nuevo usuario
+    createUser(data: Partial<User>): Observable<ApiResponse<User>> {
+        return this.http.post<ApiResponse<User>>(`${this.apiUrl}/user/createUser`, data);
     }
 
-    editUser(data: any, id: number): Observable<any> {
-        return this.http.put<any>(`${this.apiUrl}/user/editUser/` + id, data, this.header.getHttpOptions());
+    // edita un usuario ya creado
+    editUser(id: number, data: Partial<User>): Observable<ApiResponse<User>> {
+        return this.http.put<ApiResponse<User>>(`${this.apiUrl}/user/editUser/${id}`, data);
     }
 
-    deleteUser(id: number): Observable<any> {
-        return this.http.delete<any>(`${this.apiUrl}/user/deleteUser/` + id, this.header.getHttpOptions());
+    // elimina un usuario
+    deleteUser(id: number): Observable<ApiResponse<{ message: string }>> {
+        return this.http.delete<ApiResponse<{ message: string }>>(`${this.apiUrl}/user/deleteUser/${id}`);
     }
 }
