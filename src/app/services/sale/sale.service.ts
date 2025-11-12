@@ -34,7 +34,9 @@ export class SaleService {
     }
 
     // imprime una venta
-    printSale(id: number): Observable<ApiResponse<any>> {
-        return this.http.get<ApiResponse<any>>(`${this.apiUrl}/sales/getSales/${id}/print`);
+    printSale(id: number): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/sales/getSales/${id}/print`, {
+            responseType: 'blob'
+        });
     }
 }
