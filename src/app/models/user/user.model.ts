@@ -4,11 +4,3 @@ export interface IUser {
     email: string;
     password?: string;
 }
-
-export interface ApiResponse {
-    original: {
-        success: boolean;
-        data: IUser[];
-        message: string;
-    };
-}
