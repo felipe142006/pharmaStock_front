@@ -1,10 +1,13 @@
 <app-navbar></app-navbar>
 
-<div class="p-6">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-2xl font-semibold text-gray-800">Gestión de Usuarios</h2>
+<div class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Gestión de Usuarios</h1>
+      <p class="text-sm text-gray-500">Administra tus usuarios</p>
+    </div>
     <button
-      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+      class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-white font-semibold shadow hover:bg-emerald-700"
       (click)="openCreate()"
     >
       <i class="fa fa-user-plus mr-2"></i> Nuevo Usuario
@@ -12,15 +15,16 @@
   </div>
 
   @if (loading()) {
-  <div class="flex justify-center items-center py-8 text-gray-500">
-    <i class="fas fa-spinner fa-spin text-2xl mr-2"></i> Cargando usuarios...
+  <div class="w-full flex items-center justify-center py-16 text-gray-600">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <span class="ml-3">Cargando usuarios</span>
   </div>
   } @else { @if (users().length === 0) {
   <div class="text-center text-gray-500 py-8">No hay usuarios registrados.</div>
   } @else {
-  <div class="overflow-x-auto rounded-lg shadow">
-    <table class="min-w-full bg-white">
-      <thead class="bg-gray-800 text-white">
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
         <tr>
           <th class="px-4 py-2 text-left">Nombre</th>
           <th class="px-4 py-2 text-left">Correo</th>
@@ -76,7 +80,9 @@
   <div class="modal-body">
     <form [formGroup]="form" class="space-y-4">
       <div>
-        <label class="block font-medium mb-1">Nombre<small class="text-red-600"> *</small></label>
+        <label class="block font-medium mb-1"
+          >Nombre<small class="text-red-600"> *</small></label
+        >
         <input
           formControlName="name"
           type="text"
@@ -86,7 +92,9 @@
       </div>
 
       <div>
-        <label class="block font-medium mb-1">Correo<small class="text-red-600"> *</small></label>
+        <label class="block font-medium mb-1"
+          >Correo<small class="text-red-600"> *</small></label
+        >
         <input
           formControlName="email"
           type="email"
@@ -97,7 +105,9 @@
 
       @if (!editingUser()) {
       <div>
-        <label class="block font-medium mb-1">Contraseña<small class="text-red-600"> *</small></label>
+        <label class="block font-medium mb-1"
+          >Contraseña<small class="text-red-600"> *</small></label
+        >
         <input
           formControlName="password"
           type="password"

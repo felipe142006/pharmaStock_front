@@ -60,6 +60,7 @@ export class SalesComponent {
   readonly TAX_PERCENT = 19;
 
   selectedCustomerId = signal<number | null>(null);
+  selectedCustomerName = signal<string | null>(null);
 
   step1Form!: FormGroup;
   step2Form!: FormGroup;
@@ -175,6 +176,7 @@ export class SalesComponent {
           this.selectedCustomerId.set(null);
         } else {
           this.selectedCustomerId.set(found.id);
+          this.selectedCustomerName.set(found.name);
           this._swal.showSuccess('Cliente encontrado y seleccionado.');
         }
       },
@@ -214,6 +216,7 @@ export class SalesComponent {
     this._customerSvc.createCustomer(payload).subscribe({
       next: (r: any) => {
         this.selectedCustomerId.set(r?.data?.id ?? null);
+        this.selectedCustomerName.set(r?.data?.name ?? null);
         this._swal.showSuccess('Cliente creado y seleccionado.');
         this.goToStep2();
       },

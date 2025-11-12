@@ -153,7 +153,7 @@
 
         @if (selectedCustomerId()) {
         <div class="text-sm text-emerald-700 col-span-full">
-          Cliente seleccionado (ID: {{ selectedCustomerId() }})
+          Cliente seleccionado: {{ selectedCustomerName() }}
         </div>
         }
       </div>
@@ -225,8 +225,8 @@
     <form [formGroup]="step2Form" class="space-y-4">
       <div class="bg-gray-50 rounded-lg p-3 text-xs text-gray-600">
         IVA aplicado: <b>19%</b> • Fecha: {{ todayStr }}
-        <span *ngIf="selectedCustomerId()"
-          >• Cliente ID: {{ selectedCustomerId() }}</span
+        <span *ngIf="selectedCustomerName()"
+          >• Cliente: {{ selectedCustomerName() }}</span
         >
       </div>
 
