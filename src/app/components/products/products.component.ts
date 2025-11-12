@@ -102,7 +102,6 @@ export class ProductsComponent {
     const payload = this.form.value;
 
     this.formLoading.set(true);
-    this.swal.showLoading();
 
     if (this.editingProduct()) {
       const id = this.editingProduct()!.id;
@@ -111,6 +110,7 @@ export class ProductsComponent {
           this.swal
             .showSuccessPromise('Producto actualizado correctamente')
             .then(() => {
+              this.formLoading.set(false);
               this.modal.close();
               this.loadProducts();
             });
@@ -119,6 +119,7 @@ export class ProductsComponent {
           const msg =
             err?.error?.message || 'No fue posible actualizar el producto';
           this.swal.showError(msg);
+          this.formLoading.set(false);
         },
         complete: () => this.formLoading.set(false),
       });
@@ -128,6 +129,7 @@ export class ProductsComponent {
           this.swal
             .showSuccessPromise('Producto creado exitosamente')
             .then(() => {
+              this.formLoading.set(false);
               this.modal.close();
               this.loadProducts();
             });
@@ -135,6 +137,7 @@ export class ProductsComponent {
         error: (err) => {
           const msg = err?.error?.message || 'No fue posible crear el producto';
           this.swal.showError(msg);
+          this.formLoading.set(false);
         },
         complete: () => this.formLoading.set(false),
       });

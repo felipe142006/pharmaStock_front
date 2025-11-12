@@ -1,2 +1,177 @@
 <app-navbar></app-navbar>
-<p>clients works!</p>
+
+<div class="max-w-screen-xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Clientes</h1>
+      <p class="text-sm text-gray-500">Administra tus clientes</p>
+    </div>
+
+    <button
+      class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-white font-semibold shadow hover:bg-emerald-700"
+      (click)="openCreate()"
+    >
+      <i class="fas fa-plus"></i>
+      Nuevo cliente
+    </button>
+  </div>
+
+  @if (loading()) {
+  <div class="w-full flex items-center justify-center py-16 text-gray-600">
+    <i class="fas fa-spinner fa-spin fa-2x"></i>
+    <span class="ml-3">Cargando clientes…</span>
+  </div>
+  } @else {
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
+        <tr>
+          <th class="px-4 py-3 text-left">Documento</th>
+          <th class="px-4 py-3 text-left">Nombre</th>
+          <th class="px-4 py-3 text-left">Email</th>
+          <th class="px-4 py-3 text-left">Teléfono</th>
+          <th class="px-4 py-3 text-left">Dirección</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (c of clients(); track trackById($index, c)) {
+        <tr class="border-b hover:bg-gray-50 transition">
+          <td class="px-4 py-2 font-mono">{{ c.document || "—" }}</td>
+          <td class="px-4 py-2">{{ c.name }}</td>
+          <td class="px-4 py-2">{{ c.email || "—" }}</td>
+          <td class="px-4 py-2">{{ c.phone || "—" }}</td>
+          <td class="px-4 py-2">{{ c.address || "—" }}</td>
+          <td class="px-4 py-2 text-center">
+            <button
+              class="text-blue-600 hover:text-blue-800 mx-1"
+              (click)="openEdit(c)"
+            >
+              <i class="fas fa-edit"></i>
+            </button>
+            <button
+              class="text-red-600 hover:text-red-800 mx-1"
+              (click)="deleteClient(c.id)"
+            >
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+            No hay clientes. Crea el primero con el botón “Nuevo cliente”.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</div>
+
+<!-- modal para crear y editar -->
+<ng-template #clientModal>
+  <div class="modal-header">
+    <h4 class="modal-title text-gray-900 font-semibold">
+      {{ editing() ? "Editar cliente" : "Nuevo cliente" }}
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="closeModal()"
+    ></button>
+  </div>
+
+  <div class="modal-body">
+    <form [formGroup]="form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-xs font-medium text-gray-600">
+          Documento <small class="text-red-600">*</small>
+        </label>
+        <input
+          type="text"
+          formControlName="document"
+          placeholder="CC/NIT/Pasaporte"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (invalid('document')) {
+        <div class="text-xs text-rose-600 mt-1">Documento es requerido.</div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">
+          Nombre <small class="text-red-600">*</small>
+        </label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Nombre del cliente"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (invalid('name')) {
+        <div class="text-xs text-rose-600 mt-1">Nombre es requerido.</div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="correo@dominio.com"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (form.get('email')?.invalid && (form.get('email')?.touched ||
+        form.get('email')?.dirty)) {
+        <div class="text-xs text-rose-600 mt-1">Correo no válido.</div>
+        }
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium text-gray-600">
+          Teléfono <small class="text-red-600">*</small>
+        </label>
+        <input
+          type="text"
+          formControlName="phone"
+          placeholder="Celular/Teléfono"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+        @if (invalid('phone')) {
+        <div class="text-xs text-rose-600 mt-1">Teléfono es requerido.</div>
+        }
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium text-gray-600">Dirección</label>
+        <input
+          type="text"
+          formControlName="address"
+          placeholder="Dirección del cliente"
+          class="w-full rounded-lg border-2 px-3 py-2 outline-none border-gray-200 focus:border-emerald-500"
+        />
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      Cancelar
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary inline-flex items-center gap-2"
+      (click)="saveClient()"
+      [disabled]="form.invalid || formLoading()"
+    >
+      @if (!formLoading()) {
+      <i class="fas fa-save"></i> {{ editing() ? "Actualizar" : "Guardar" }}
+      } @else {
+      <i class="fas fa-spinner fa-spin"></i> Procesando… }
+    </button>
+  </div>
+</ng-template>

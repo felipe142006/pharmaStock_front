@@ -125,11 +125,13 @@ export class UserComponent {
               this.modal.close();
               this.loadUsers();
             });
+            this.formLoading.set(false);
         },
         error: (err) => {
           const msg =
             err?.error?.message || 'No fue posible actualizar el usuario';
           this.swal.showError(msg);
+          this.formLoading.set(false);
         },
         complete: () => this.formLoading.set(false),
       });
@@ -141,11 +143,13 @@ export class UserComponent {
             .then(() => {
               this.modal.close();
               this.loadUsers();
+              this.formLoading.set(false);
             });
         },
         error: (err) => {
           const msg = err?.error?.message || 'No fue posible crear el usuario';
           this.swal.showError(msg);
+          this.formLoading.set(false);
         },
         complete: () => this.formLoading.set(false),
       });
